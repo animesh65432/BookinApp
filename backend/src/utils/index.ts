@@ -21,6 +21,24 @@ export const Checkcreatetheuserbody = [
   },
 ];
 
+export const CheckForlogintheuser = [
+  check("Email", "Email is required ").isString(),
+  check("Password", "Password with 6 or more characters required").isLength({
+    min: 6,
+  }),
+  (req: Request, res: Response, next: NextFunction) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      return res.status(StatusCodes.BAD_REQUEST).json({
+        error: errors.array(),
+      });
+    } else {
+      next();
+    }
+  },
+];
+
 export const createthetokens = (obj: object) => {
   let token = jsonwebtoekn.sign(
     obj,
