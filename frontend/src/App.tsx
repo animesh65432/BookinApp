@@ -1,9 +1,16 @@
+import { Router, Route, Routes } from "react-router-dom";
+import Layout from "./layouts/Layout";
+
+const Hello = () => {
+  return <>Hello</>;
+};
+
 function App() {
   return (
     <>
-      <div>
-        <p className="text-red-500">Add Tailwind css</p>
-      </div>
+      <Routes>
+        <Route path="/" element={<Layout childrean={<Hello />} />}></Route>
+      </Routes>
     </>
   );
 }
