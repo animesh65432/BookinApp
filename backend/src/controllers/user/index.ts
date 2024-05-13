@@ -38,6 +38,7 @@ export const createtheuser = async (req: Request, res: Response) => {
       data: "sucessfully create the user",
     });
   } catch (error) {
+    console.log(error);
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
       sucess: false,
       error: "Sever errors",
