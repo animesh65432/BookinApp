@@ -1,6 +1,9 @@
 import express, { Request, Response } from "express";
 import cors from "cors";
 import "dotenv/config";
+import momgoose from "mongoose";
+
+momgoose.connect(process.env.mongodb_connection_string as string);
 
 const app = express();
 app.use(express.json());
@@ -12,6 +15,13 @@ app.get("/api/test", async (req: Request, res: Response) => {
     messsage: "Hello from express",
   });
 });
-app.listen(3000, () => {
-  console.log(`server start at the ${3000}`);
-});
+momgoose
+  .connect(process.env.mongodb_connection_string as string)
+  .then(() => {
+    app.listen(() =>
+      console.log(`sucessfully connected with database and server`)
+    );
+  })
+  .catch(() => {
+    console.log(`something went wrong`);
+  });
