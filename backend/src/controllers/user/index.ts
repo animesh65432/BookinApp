@@ -6,23 +6,25 @@ import bcrypt from "bcryptjs";
 
 export const createtheuser = async (req: Request, res: Response) => {
   try {
-    let { Email, Password } = req.body;
+    console.log(req.body);
+    let { Email, Password, UserName } = req.body;
     let Exsitinguser = await User.findOne({
       Email: Email,
     });
 
     if (Exsitinguser) {
-      res.status(StatusCodes.BAD_REQUEST).json({
-        sucess: false,
-        error: "user already exsit",
+      return res.status(StatusCodes.BAD_REQUEST).json({
+        success: false,
+        error: "User already exists",
       });
     }
 
     let haspassword = await bcrypt.hash(Password, 10);
 
     let newuser = new User({
-      ...req.body,
+      UserName: UserName,
       Password: haspassword,
+      Email: Email,
     });
     await newuser.save();
 
@@ -34,14 +36,14 @@ export const createtheuser = async (req: Request, res: Response) => {
       maxAge: 86400000,
     });
     return res.status(StatusCodes.OK).json({
-      sucess: true,
-      data: "sucessfully create the user",
+      success: true,
+      data: "Successfully created the user",
     });
   } catch (error) {
     console.log(error);
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-      sucess: false,
-      error: "Sever errors",
+      success: false,
+      error: "Server error",
     });
   }
 };
@@ -56,17 +58,17 @@ export const logintheuser = async (req: Request, res: Response) => {
 
     if (!user) {
       return res.status(StatusCodes.BAD_GATEWAY).json({
-        sucess: false,
-        error: "user does not exsit",
+        success: false,
+        error: "User does not exist",
       });
     }
 
-    let ispasswordcoorect = bcrypt.compare(Password, user.Password);
+    let isPasswordCorrect = await bcrypt.compare(Password, user.Password);
 
-    if (!ispasswordcoorect) {
+    if (!isPasswordCorrect) {
       return res.status(StatusCodes.BAD_REQUEST).json({
-        sucess: false,
-        error: "password does not match",
+        success: false,
+        error: "Password does not match",
       });
     }
 
@@ -78,7 +80,7 @@ export const logintheuser = async (req: Request, res: Response) => {
     });
 
     return res.status(StatusCodes.OK).json({
-      sucess: true,
+      success: true,
       data: {
         userid: user._id,
       },
@@ -87,8 +89,8 @@ export const logintheuser = async (req: Request, res: Response) => {
     console.log(error);
 
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-      sucess: false,
-      error: error,
+      success: false,
+      error: "Internal server error",
     });
   }
 };
